@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Traductor Awajún ↔ Español</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background: #f7f7f7;}
+        .container { max-width: 600px; margin: auto; background: #fff; border-radius: 8px; padding: 30px; box-shadow: 0 2px 8px #ccc; }
+        textarea { width: 100%; height: 60px; margin-bottom: 10px; font-size: 1em; }
+        select, button { margin-top: 10px; font-size: 1em; }
+        .output { background: #e9ffe8; padding: 12px; border-radius: 6px; margin-top: 16px; font-size: 1.1em;}
+        .footer { text-align: center; margin-top: 30px; color: #777; font-size: 0.95em;}
+        .footer a { color: #0072c6; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Traductor Awajún ↔ Español</h2>
+        <textarea id="inputText" placeholder="Escribe una palabra o frase..."></textarea>
+        <br>
+        <select id="direction">
+            <option value="awajun-espanol">Awajún → Español</option>
+            <option value="espanol-awajun">Español → Awajún</option>
+        </select>
+        <button onclick="translate()">Traducir</button>
+        <div class="output" id="outputText"></div>
+        <div class="footer">
+            Creado por Grimaldo Juep Sanchez<br>
+            Correo: <a href="mailto:grimaldojuepsanchez@gmail.com">grimaldojuepsanchez@gmail.com</a><br>
+            Facebook: <a href="https://facebook.com/grimaldojuepsanchez" target="_blank">Grimaldo Juep Sanchez</a>
+        </div>
+    </div>
+    <script>
+        let diccionario = null;
+        async function cargarDiccionario() {
+            const response = await fetch('diccionario_awajun_espanol.json');
+            diccionario = await response.json();
+        }
+        async function translate() {
+            if (!diccionario) {
+                await cargarDiccionario();
+            }
+            const text = document.getElementById('inputText').value.trim().toLowerCase();
+            const direction = document.getElementById('direction').value;
+            const dict = diccionario[direction];
+            let result = dict[text];
+            if (!result) {
+                const words = text.split(/\s+/);
+                let resultWords = words.map(word => dict[word] || word);
+                result = resultWords.join(' ');
+                if (result === text) {
+                    result = "Traducción no encontrada en el diccionario.";
+                }
+            }
+            document.getElementById('outputText').innerText = result;
+        }
+    </script>
+</body>
+</html>
