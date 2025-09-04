@@ -1,58 +1,115 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Traductor Awajún ↔ Español</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 40px; background: #f7f7f7;}
-        .container { max-width: 600px; margin: auto; background: #fff; border-radius: 8px; padding: 30px; box-shadow: 0 2px 8px #ccc; }
-        textarea { width: 100%; height: 60px; margin-bottom: 10px; font-size: 1em; }
-        select, button { margin-top: 10px; font-size: 1em; }
-        .output { background: #e9ffe8; padding: 12px; border-radius: 6px; margin-top: 16px; font-size: 1.1em;}
-        .footer { text-align: center; margin-top: 30px; color: #777; font-size: 0.95em;}
-        .footer a { color: #0072c6; text-decoration: none; }
-    </style>
+  <meta charset="UTF-8">
+  <title>Traductor Awajún - Español</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      background: linear-gradient(120deg, #f5d365 0%, #bddcf6 100%);
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+    }
+    .container {
+      background: #fff;
+      padding: 2.5rem 2rem 2rem 2rem;
+      border-radius: 18px;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.14);
+      min-width: 320px;
+      max-width: 370px;
+      width: 100%;
+      text-align: center;
+    }
+    h1 {
+      color: #3a4856;
+      margin-bottom: 1.3rem;
+      font-size: 1.7rem;
+    }
+    input[type="text"] {
+      width: 75%;
+      padding: 0.7rem;
+      border: 2px solid #a7c7e7;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      outline: none;
+      margin-bottom: 1.1rem;
+      transition: border-color 0.2s;
+    }
+    input[type="text"]:focus {
+      border-color: #f5b041;
+    }
+    button {
+      padding: 0.7rem 2rem;
+      background: linear-gradient(90deg, #f5b041 60%, #a7c7e7 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 2px 10px rgba(245,179,65,0.1);
+      transition: background 0.2s, transform 0.1s;
+    }
+    button:hover {
+      background: linear-gradient(90deg, #f5d365 60%, #bddcf6 100%);
+      transform: translateY(-2px) scale(1.03);
+    }
+    #resultado {
+      margin-top: 1.2rem;
+      font-size: 1.3rem;
+      color: #2471a3;
+      min-height: 2.2rem;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      transition: color 0.2s;
+    }
+    .footer {
+      margin-top: 2rem;
+      font-size: 0.97rem;
+      color: #767676;
+    }
+    @media (max-width: 480px) {
+      .container { min-width: unset; padding: 1.2rem; }
+      input[type="text"] { width: 98%; }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Traductor Awajún ↔ Español</h2>
-        <textarea id="inputText" placeholder="Escribe una palabra o frase..."></textarea>
-        <br>
-        <select id="direction">
-            <option value="awajun-espanol">Awajún → Español</option>
-            <option value="espanol-awajun">Español → Awajún</option>
-        </select>
-        <button onclick="translate()">Traducir</button>
-        <div class="output" id="outputText"></div>
-        <div class="footer">
-            Creado por Grimaldo Juep Sanchez<br>
-            Correo: <a href="mailto:grimaldojuepsanchez@gmail.com">grimaldojuepsanchez@gmail.com</a><br>
-            Facebook: <a href="https://facebook.com/grimaldojuepsanchez" target="_blank">Grimaldo Juep Sanchez</a>
-        </div>
+  <div class="container">
+    <h1>Traductor Awajún → Español</h1>
+    <input type="text" id="awajunInput" placeholder="Escribe una palabra en Awajún">
+    <br>
+    <button onclick="traducir()">Traducir</button>
+    <p id="resultado"></p>
+    <div class="footer">
+      <span>Diccionario básico Awajún-Español</span>
     </div>
-    <script>
-        let diccionario = null;
-        async function cargarDiccionario() {
-            const response = await fetch('diccionario_awajun_espanol.json');
-            diccionario = await response.json();
-        }
-        async function translate() {
-            if (!diccionario) {
-                await cargarDiccionario();
-            }
-            const text = document.getElementById('inputText').value.trim().toLowerCase();
-            const direction = document.getElementById('direction').value;
-            const dict = diccionario[direction];
-            let result = dict[text];
-            if (!result) {
-                const words = text.split(/\s+/);
-                let resultWords = words.map(word => dict[word] || word);
-                result = resultWords.join(' ');
-                if (result === text) {
-                    result = "Traducción no encontrada en el diccionario.";
-                }
-            }
-            document.getElementById('outputText').innerText = result;
-        }
-    </script>
+  </div>
+  <script>
+    // Diccionario Awajún-Español
+    const diccionario = {
+      "atash": "gallo",
+      "nuwa": "mujer",
+      "aishmag": "hombre",
+      "amish": "zorro",
+      "aents": "persona"
+    };
+
+    function traducir() {
+      const palabra = document.getElementById('awajunInput').value.trim().toLowerCase();
+      const resultado = diccionario[palabra] || "Traducción no encontrada";
+      document.getElementById('resultado').textContent = resultado;
+      document.getElementById('resultado').style.color = resultado === "Traducción no encontrada" ? "#c0392b" : "#2471a3";
+    }
+
+    // Permitir traducir con Enter
+    document.getElementById('awajunInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') traducir();
+    });
+  </script>
 </body>
 </html>
